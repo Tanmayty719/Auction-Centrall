@@ -21,8 +21,8 @@ export const Auction = () => {
           <div className="border border-gray-200 rounded-md overflow-hidden hover:shadow-lg transition-shadow bg-white">
             <div className="relative">
               <img
-                src="https://res.cloudinary.com/dhv8qx1qy/image/upload/v1750644725/miekytfqgwnlj4jqai5k.png"
-                alt="Vintage Camera"
+                src="https://res.cloudinary.com/dgltznomz/image/upload/v1756812754/padlock_hqgohj.jpg"
+                alt="Vintage Lock"
                 className="w-full h-48 object-contain"
               />
               <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-sm text-xs font-medium">
@@ -32,12 +32,12 @@ export const Auction = () => {
             </div>
             <div className="p-4">
               <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
-                Vintage Film Camera - Excellent Condition
+                16th century padlock - Lock - Triangle shaped
               </h3>
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <p className="text-sm text-gray-500">Current Bid</p>
-                  <p className="text-lg font-bold text-gray-900">$245.00</p>
+                  <p className="text-lg font-bold text-gray-900">₹24500.00</p>
                 </div>
                 <div className="text-right">
                   <p className="text-sm text-gray-500">Bids</p>
@@ -56,7 +56,7 @@ export const Auction = () => {
           <div className="border border-gray-200 rounded-md overflow-hidden hover:shadow-lg transition-shadow bg-white">
             <div className="relative">
               <img
-                src="https://res.cloudinary.com/dhv8qx1qy/image/upload/v1750644637/lk7l3ar3sptniptieyo3.png"
+                src="https://res.cloudinary.com/dgltznomz/image/upload/v1756813448/clock_bjj2qv.jpg"
                 alt="Antique Watch"
                 className="w-full h-48 object-contain"
               />
@@ -67,12 +67,12 @@ export const Auction = () => {
             </div>
             <div className="p-4">
               <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
-                Luxury Swiss Watch - Gold Plated
+               Howard Miller Grafton Grandfather Clock
               </h3>
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <p className="text-sm text-gray-500">Current Bid</p>
-                  <p className="text-lg font-bold text-gray-900">$1,250.00</p>
+                  <p className="text-lg font-bold text-gray-900">₹12500.50</p>
                 </div>
                 <div className="text-right">
                   <p className="text-sm text-gray-500">Bids</p>
@@ -91,7 +91,7 @@ export const Auction = () => {
           <div className="border border-gray-200 rounded-md overflow-hidden hover:shadow-lg transition-shadow bg-white">
             <div className="relative">
               <img
-                src="https://res.cloudinary.com/dhv8qx1qy/image/upload/v1750644675/tatznfsoekfp3vsoeswd.png"
+                src="https://res.cloudinary.com/dgltznomz/image/upload/v1756813464/painting_ozh8gt.jpg"
                 alt="Art Painting"
                 className="w-full h-48 object-contain"
               />
@@ -102,12 +102,12 @@ export const Auction = () => {
             </div>
             <div className="p-4">
               <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
-                Original Oil Painting - Abstract Art
+                Lord Vishnu on Garuda, Tanjore Painting (24 x 18 inches) Teak wood board (22K Gold, Antique Style)
               </h3>
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <p className="text-sm text-gray-500">Current Bid</p>
-                  <p className="text-lg font-bold text-gray-900">$890.00</p>
+                  <p className="text-lg font-bold text-gray-900">₹34,787.50</p>
                 </div>
                 <div className="text-right">
                   <p className="text-sm text-gray-500">Bids</p>
@@ -122,7 +122,7 @@ export const Auction = () => {
             </div>
           </div>
         </div>
-        {/* <AdsComponent dataAdSlot="5537585913" /> */}
+      
       </div>
     </section>
   );

@@ -8,10 +8,10 @@ export const Hero = () => {
         <div className="text-center">
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
             The Future of 
-            <span className="text-indigo-900 block">Online Auction</span>
+            <span className="text-indigo-900 block">Online Antique Auction</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Discover unique items, place competitive bids, and sell your
+            Discover unique antiques, place competitive bids, and sell your
             treasures to a global audience. Join thousands of buyers and sellers
             in our trusted marketplace.
           </p>

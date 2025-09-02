@@ -26,7 +26,7 @@ app.use(cors({
 
 
 app.get('/', async (req, res) => {
-    res.json({ msg: 'Welcome to Online Auction System API' });
+    res.json({ msg: 'Welcome to Online Antique Auction System ' });
 });
 app.use('/auth', userAuthRouter)
 app.use('/user', secureRoute, userRouter)

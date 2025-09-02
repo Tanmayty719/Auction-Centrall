@@ -55,9 +55,14 @@ export const Navbar = () => {
           <div className="flex justify-between items-center">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-2">
-              <RiAuctionLine className="h-6 w-6 text-gray-700 " />
-              <span className="text-xl font-bold text-gray-900 ">
-                Online Auction
+              {/* Logo Image */}
+            
+              {/* Optional Icon (Keep if you want both) */}
+              <RiAuctionLine className="h-6 w-6 text-gray-700" />
+
+              {/* Brand Name */}
+              <span className="text-xl font-bold text-gray-900">
+                Auction Centrall
               </span>
             </Link>
 
@@ -108,7 +113,7 @@ export const Navbar = () => {
           <div className="flex items-center space-x-2">
             <RiAuctionLine className="h-6 w-6 text-gray-700 " />
             <span className="text-xl font-bold text-gray-900 ">
-              Online Auction
+              Auction Centrall
             </span>
           </div>
           <button
@@ -245,7 +250,6 @@ const navMenu = [
     link: "/",
     icon: <MdOutlineHome className="mr-3 h-5 w-5" />,
   },
-
 ];
 
 const protectedNavLink = [
@@ -269,7 +273,11 @@ const protectedNavLink = [
     link: "/myauction",
     icon: <MdAttachMoney className="mr-3 h-5 w-5" />,
   },
-
+  {
+    name: "Contact",
+    link: "/contact",
+    icon: <MdMailOutline className="mr-3 h-5 w-5" />,
+  },
   {
     name: "Profile",
     link: "/profile",
@@ -307,7 +315,7 @@ const adminNavLink = [
 
 // Helper function to get navigation links based on user role
 const getNavLinks = (userRole) => {
-  if (userRole === 'admin') {
+  if (userRole === "admin") {
     return adminNavLink;
   }
   return protectedNavLink.slice(0, 4);

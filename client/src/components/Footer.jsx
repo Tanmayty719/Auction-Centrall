@@ -10,7 +10,7 @@ export const Footer = () => {
                  Auction Central
               </h3>
               <p className="text-gray-400 text-sm">
-                Your trusted marketplace since 2025
+              
               </p>
             </div>
             <div className="flex space-x-6">
@@ -36,7 +36,7 @@ export const Footer = () => {
           </div>
           <div className="border-t border-gray-800 mt-6 pt-6 text-center">
             <p className="text-gray-400 text-sm">
-              © 2025 Online Auction System. All rights reserved.
+             
             </p>
           </div>
         </div>

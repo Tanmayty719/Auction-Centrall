@@ -44,18 +44,13 @@ export const CreateAuction = () => {
   });
 
   const categories = [
-    "Electronics",
     "Antiques",
     "Art",
-    "Books",
-    "Clothing",
+    "Furniture",
     "Collectibles",
-    "Home & Garden",
     "Jewelry",
     "Musical Instruments",
-    "Sports",
     "Toys",
-    "Vehicles",
     "Other",
   ];
 
@@ -203,7 +198,7 @@ export const CreateAuction = () => {
                     htmlFor="startingPrice"
                     className="block text-sm font-medium text-gray-700 mb-2"
                   >
-                    Starting Price ($) <span className="text-red-600">*</span>
+                    Starting Price (₹) <span className="text-red-600">*</span>
                   </label>
                   <input
                     type="number"
