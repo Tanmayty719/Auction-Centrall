@@ -11,6 +11,7 @@ import PrivacyPolicy from "../pages/legal/PrivacyPolicy";
 import TermsOfService from "../pages/legal/TermsOfService";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
+import ForgotPasswordNotice from "../pages/forgot-password.jsx";
 
 export const openRoutes = [
   {
@@ -33,6 +34,11 @@ export const openRoutes = [
         element: <Signup />,
         errorElement: <Error />,
       },
+    {
+  path: "forgot-password",
+  element: <ForgotPasswordNotice />,
+  errorElement: <Error />,
+},
       {
         path: "contact",
         element: <Contact />,

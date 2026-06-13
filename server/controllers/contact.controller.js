@@ -7,25 +7,53 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export const handleSendMessage = async (req, res) => {
     try {
         const { name, email, subject, message } = req.body;
-        await resend.batch.send([{
-            from: `${name} <onboarding@resend.dev>`,
-            to: ['hi@ihavetech.com'],
-            reply_to: email,
-            subject: `${name} send a message`,
-            html: adminEmailTemplate(name, email, subject, message)
-        },
-        {
-            from: `Avnish Kumar <hi@ihavetech.com>`,
-            to: email,
-            subject: `Reply from Avnish Kumar`,
-            html: userEmailTemplate(name, email, subject, message)
-        }]
-        );
+        const response = await resend.batch.send([
+
+  {
+    from: "Auction Centrall <onboarding@resend.dev>",
+
+    to: ["tkrpa12@gmail.com"],
+
+    reply_to: email,
+
+    subject: `${name} sent a message`,
+
+    html: adminEmailTemplate(
+      name,
+      email,
+      subject,
+      message
+    ),
+  },
+
+  {
+    from: "Tanmay Kamtekar <onboarding@resend.dev>",
+
+    to: [email],
+
+    subject: "We received your message",
+
+    html: userEmailTemplate(
+      name,
+      email,
+      subject,
+      message
+    ),
+  },
+  
+
+]);
+console.log("RESEND RESPONSE:", response);
         res.status(200).json({ message: "Message sent succesfully" });
     } catch (error) {
-        return res.status(500).json({ error: "Something went wrong from server" })
-    }
 
+    console.log("RESEND ERROR:", error);
+
+    return res.status(500).json({
+        error: error.message
+    });
+
+}
 }
 
 
@@ -82,7 +110,7 @@ const userEmailTemplate = (name, email, subject, message) => `
         <p><strong>Message:</strong></p>
         <p>${message}</p>
 
-        <a href="auction.ihavetech.com" class="btn">Visit Our Website</a>
+        <a href="http://localhost:5173/" class="btn">Visit Our Website</a>
 
         <p>
           If this wasn’t you or you need immediate help, feel free to reply directly to this email.

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router';
+import { Link } from "react-router-dom";
 import AuctionCard from '../../components/AuctionCard';
 import LoadingScreen from '../../components/LoadingScreen';
 import { getAdminDashboard, getAllUsers } from '../../api/admin';
@@ -15,7 +15,7 @@ export const AdminDashboard = () => {
     try {
       const data = await getAdminDashboard();
       setDashboardData(data || {});
-      setUsers(data.recentUsersList || []); // Set users from dashboard data
+      setUsers(data?.recentUsersList || []);// Assuming the API returns a list of recent users as part of the dashboard data
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
       setError('Failed to load dashboard data');
@@ -182,7 +182,7 @@ export const AdminDashboard = () => {
           {/* Users Table */}
           <div className="bg-white rounded-sm shadow-sm border border-gray-200 overflow-hidden">
             <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-medium text-gray-900">Latest 10 Users</h3>
+              <h3 className="text-lg font-medium text-gray-900">Latest Users</h3>
             </div>
             
             {!users || users.length === 0 ? (
@@ -214,16 +214,23 @@ export const AdminDashboard = () => {
                   <tbody className="bg-white divide-y divide-gray-200">
                     {(users || []).map((user) => (
                       <tr key={user._id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-8 py-6 whitespace-nowrap">
                           <div className="flex items-center">
                             <div className="flex-shrink-0 h-10 w-10">
-                              <div className="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
-                                <span className="text-sm font-medium text-gray-700">
-                                  {user.name.charAt(0).toUpperCase()}
-                                </span>
+                              <div className="h-15 w-15 rounded-full bg-gray-300 flex items-center justify-center">
+                                
+                                  <img
+                            src={
+                              user.avatar ||
+                              `https://ui-avatars.com/api/?name=${user.name}`
+                            }
+                            alt={user.name}
+                            className="w-15 h-15 rounded-full object-cover border-2 border-gray-200"
+                          />
+                                
                               </div>
                             </div>
-                            <div className="ml-4">
+                            <div className="ml-10">
                               <div className="text-sm font-medium text-gray-900">{user.name}</div>
                               <div className="text-sm text-gray-500">{user.email}</div>
                             </div>

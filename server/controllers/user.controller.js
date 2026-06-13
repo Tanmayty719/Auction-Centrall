@@ -3,7 +3,7 @@ import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 import { connectDB } from '../connection.js'
-
+import uploadImage from "../services/cloudinaryService.js";
 
 export const handleGetUser = async (req, res) => {
     try {
@@ -114,6 +114,54 @@ export const getLoginHistory = async (req, res) => {
     }
 };
 
+export const uploadProfilePhoto = async (req, res) => {
+
+  try {
+
+    await connectDB();
+
+    // CHECK IMAGE
+    if (!req.file) {
+
+      return res.status(400).json({
+        message: "No image uploaded",
+      });
+
+    }
+
+    // FIND USER
+    const updatedUser = await User.findByIdAndUpdate(
+
+      req.user.id,
+
+      {
+        avatar: req.file.path,
+      },
+
+      { new: true }
+
+    );
+
+    // SEND AVATAR URL BACK
+    res.status(200).json({
+
+      avatar: updatedUser.avatar,
+
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+
+      message: "Error uploading avatar",
+
+      error: error.message,
+
+    });
+
+  }
+
+};
 
 function getDeviceType(userAgent = "") {
     userAgent = userAgent.toLowerCase();

@@ -1,128 +1,261 @@
-import { FaClock, FaArrowRight, FaChevronRight } from "react-icons/fa";
+import { FaClock, FaChevronRight } from "react-icons/fa";
 import { Link } from "react-router";
-// import { AdsComponent } from "../AdsComponent";
 
 export const Auction = () => {
   return (
-    <section className="py-20 bg-white">
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-2xl font-bold text-gray-900">Live Auctions</h2>
+    <section className="py-24 bg-[#f8fafc] relative overflow-hidden">
+
+      {/* BACKGROUND GLOW */}
+      <div className="absolute -top-32 -left-32 w-96 h-96 bg-indigo-200/40 blur-3xl rounded-full"></div>
+
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-cyan-200/40 blur-3xl rounded-full"></div>
+
+      <div className="container mx-auto px-4 relative z-10">
+
+        {/* SECTION HEADER */}
+        <div className="flex justify-between items-center mb-14 flex-wrap gap-4">
+
+          <div>
+
+            <span className="inline-block px-4 py-2 rounded-full bg-indigo-100 text-indigo-700 font-medium text-sm mb-4">
+
+              LIVE AUCTIONS
+
+            </span>
+
+            <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900">
+              Trending Auctions
+            </h2>
+
+          </div>
+
           <Link
             to="/signup"
-            className="text-gray-700 hover:text-gray-900 flex items-center"
+            className="group text-indigo-700 hover:text-indigo-900 flex items-center font-semibold text-lg transition-all"
           >
-            View all <FaChevronRight className="h-4 w-4 ml-1" />
+            View all
+
+            <FaChevronRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
+
           </Link>
+
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-2">
-          {/* Auction Item 1 */}
-          <div className="border border-gray-200 rounded-md overflow-hidden hover:shadow-lg transition-shadow bg-white">
-            <div className="relative">
+        {/* AUCTION GRID */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+
+          {/* CARD 1 */}
+          <div className="group bg-white border border-slate-200 rounded-[2rem] overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-4 transition-all duration-500">
+
+            {/* IMAGE */}
+            <div className="relative overflow-hidden">
+
               <img
                 src="https://res.cloudinary.com/dgltznomz/image/upload/v1756812754/padlock_hqgohj.jpg"
                 alt="Vintage Lock"
-                className="w-full h-48 object-contain"
+                className="w-full h-64 object-contain bg-gradient-to-b from-slate-50 to-slate-100 group-hover:scale-105 transition-transform duration-500"
               />
-              <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-sm text-xs font-medium">
-                <FaClock className="inline h-3 w-3 mr-1" />
+
+              {/* TIMER */}
+              <div className="absolute top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+
+                <FaClock className="inline h-3 w-3 mr-2" />
+
                 2h 15m
+
               </div>
+
             </div>
-            <div className="p-4">
-              <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
-                16th century padlock - Lock - Triangle shaped
+
+            {/* CONTENT */}
+            <div className="p-6">
+
+              <h3 className="font-bold text-2xl text-slate-900 mb-4 line-clamp-2">
+                16th Century Triangle Padlock
               </h3>
-              <div className="flex items-center justify-between mb-3">
+
+              <div className="flex items-center justify-between mb-6">
+
                 <div>
-                  <p className="text-sm text-gray-500">Current Bid</p>
-                  <p className="text-lg font-bold text-gray-900">₹24500.00</p>
+
+                  <p className="text-sm text-slate-500 mb-1">
+                    Current Bid
+                  </p>
+
+                  <p className="text-2xl font-extrabold text-emerald-600">
+                    ₹24,500
+                  </p>
+
                 </div>
+
                 <div className="text-right">
-                  <p className="text-sm text-gray-500">Bids</p>
-                  <p className="text-sm font-medium text-gray-700">12</p>
+
+                  <p className="text-sm text-slate-500 mb-1">
+                    Bids
+                  </p>
+
+                  <p className="text-lg font-semibold text-slate-700">
+                    12
+                  </p>
+
                 </div>
+
               </div>
-              <Link to='/signup'>
-              <div className="w-full bg-indigo-900 hover:bg-indigo-800 text-white text-center py-2 px-4 rounded-sm font-medium transition-colors">
-                Place Bid
-              </div>
+
+              <Link to="/signup">
+
+                <button className="w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white py-4 rounded-2xl font-semibold text-lg shadow-lg hover:scale-105 transition-all duration-300">
+
+                  Place Bid
+
+                </button>
+
               </Link>
+
             </div>
+
           </div>
 
-          {/* Auction Item 2 */}
-          <div className="border border-gray-200 rounded-md overflow-hidden hover:shadow-lg transition-shadow bg-white">
-            <div className="relative">
+          {/* CARD 2 */}
+          <div className="group bg-white border border-slate-200 rounded-[2rem] overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-4 transition-all duration-500">
+
+            <div className="relative overflow-hidden">
+
               <img
                 src="https://res.cloudinary.com/dgltznomz/image/upload/v1756813448/clock_bjj2qv.jpg"
-                alt="Antique Watch"
-                className="w-full h-48 object-contain"
+                alt="Antique Clock"
+                className="w-full h-64 object-contain bg-gradient-to-b from-slate-50 to-slate-100 group-hover:scale-105 transition-transform duration-500"
               />
-              <div className="absolute top-2 right-2 bg-orange-500 text-white px-2 py-1 rounded-sm text-xs font-medium">
-                <FaClock className="inline h-3 w-3 mr-1" />
+
+              <div className="absolute top-4 right-4 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+
+                <FaClock className="inline h-3 w-3 mr-2" />
+
                 5h 42m
+
               </div>
+
             </div>
-            <div className="p-4">
-              <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
-               Howard Miller Grafton Grandfather Clock
+
+            <div className="p-6">
+
+              <h3 className="font-bold text-2xl text-slate-900 mb-4 line-clamp-2">
+                Howard Miller Grandfather Clock
               </h3>
-              <div className="flex items-center justify-between mb-3">
+
+              <div className="flex items-center justify-between mb-6">
+
                 <div>
-                  <p className="text-sm text-gray-500">Current Bid</p>
-                  <p className="text-lg font-bold text-gray-900">₹12500.50</p>
+
+                  <p className="text-sm text-slate-500 mb-1">
+                    Current Bid
+                  </p>
+
+                  <p className="text-2xl font-extrabold text-emerald-600">
+                    ₹12,500
+                  </p>
+
                 </div>
+
                 <div className="text-right">
-                  <p className="text-sm text-gray-500">Bids</p>
-                  <p className="text-sm font-medium text-gray-700">28</p>
+
+                  <p className="text-sm text-slate-500 mb-1">
+                    Bids
+                  </p>
+
+                  <p className="text-lg font-semibold text-slate-700">
+                    28
+                  </p>
+
                 </div>
+
               </div>
-              <Link to='/signup'>
-              <div className="w-full bg-indigo-900 hover:bg-indigo-800 text-white text-center py-2 px-4 rounded-sm font-medium transition-colors">
-                Place Bid
-              </div>
+
+              <Link to="/signup">
+
+                <button className="w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white py-4 rounded-2xl font-semibold text-lg shadow-lg hover:scale-105 transition-all duration-300">
+
+                  Place Bid
+
+                </button>
+
               </Link>
+
             </div>
+
           </div>
 
-          {/* Auction Item 3 */}
-          <div className="border border-gray-200 rounded-md overflow-hidden hover:shadow-lg transition-shadow bg-white">
-            <div className="relative">
+          {/* CARD 3 */}
+          <div className="group bg-white border border-slate-200 rounded-[2rem] overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-4 transition-all duration-500">
+
+            <div className="relative overflow-hidden">
+
               <img
                 src="https://res.cloudinary.com/dgltznomz/image/upload/v1756813464/painting_ozh8gt.jpg"
-                alt="Art Painting"
-                className="w-full h-48 object-contain"
+                alt="Painting"
+                className="w-full h-64 object-contain bg-gradient-to-b from-slate-50 to-slate-100 group-hover:scale-105 transition-transform duration-500"
               />
-              <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-sm text-xs font-medium">
-                <FaClock className="inline h-3 w-3 mr-1" />
+
+              <div className="absolute top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+
+                <FaClock className="inline h-3 w-3 mr-2" />
+
                 1d 3h
+
               </div>
+
             </div>
-            <div className="p-4">
-              <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
-                Lord Vishnu on Garuda, Tanjore Painting (24 x 18 inches) Teak wood board (22K Gold, Antique Style)
+
+            <div className="p-6">
+
+              <h3 className="font-bold text-2xl text-slate-900 mb-4 line-clamp-2">
+                Lord Vishnu Painting by Raghavendra Swami
               </h3>
-              <div className="flex items-center justify-between mb-3">
+
+              <div className="flex items-center justify-between mb-6">
+
                 <div>
-                  <p className="text-sm text-gray-500">Current Bid</p>
-                  <p className="text-lg font-bold text-gray-900">₹34,787.50</p>
+
+                  <p className="text-sm text-slate-500 mb-1">
+                    Current Bid
+                  </p>
+
+                  <p className="text-2xl font-extrabold text-emerald-600">
+                    ₹34,787
+                  </p>
+
                 </div>
+
                 <div className="text-right">
-                  <p className="text-sm text-gray-500">Bids</p>
-                  <p className="text-sm font-medium text-gray-700">7</p>
+
+                  <p className="text-sm text-slate-500 mb-1">
+                    Bids
+                  </p>
+
+                  <p className="text-lg font-semibold text-slate-700">
+                    7
+                  </p>
+
                 </div>
+
               </div>
-              <Link to='/signup'>
-              <div className="w-full bg-indigo-900 hover:bg-indigo-800 text-white text-center py-2 px-4 rounded-sm font-medium transition-colors">
-                Place Bid
-              </div>
+
+              <Link to="/signup">
+
+                <button className="w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white py-4 rounded-2xl font-semibold text-lg shadow-lg hover:scale-105 transition-all duration-300">
+
+                  Place Bid
+
+                </button>
+
               </Link>
+
             </div>
+
           </div>
+
         </div>
-      
+
       </div>
     </section>
   );

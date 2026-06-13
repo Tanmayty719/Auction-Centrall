@@ -1,304 +1,812 @@
-import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { changePassword } from "../api/user";
-import { CiMail, CiUser, CiLock, CiCamera } from "react-icons/ci";
+import { useState, useRef, useMemo } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { changePassword, uploadAvatar } from "../api/user";
+import {
+  CiMail,
+  CiUser,
+  CiLock,
+  CiCamera,
+} from "react-icons/ci";
+
+import { dashboardStats } from "../api/auction";
+
+import {
+  IoEyeOutline,
+  IoEyeOffOutline,
+  IoCheckmarkCircle,
+} from "react-icons/io5";
+
 import { useSelector } from "react-redux";
-import LoadingScreen from "../components/LoadingScreen";
 
 export default function Profile() {
-  const { user} = useSelector((state) => state.auth);
+
+  const { user } = useSelector((state) => state.auth);
+
+  const fileInputRef = useRef(null);
+
   const [isError, setIsError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+
+  /* =========================================
+     PASSWORD VISIBILITY
+  ========================================= */
+
+  const [showCurrentPassword, setShowCurrentPassword] =
+    useState(false);
+
+  const [showNewPassword, setShowNewPassword] =
+    useState(false);
+
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState(false);
+
+  /* =========================================
+     STATS
+  ========================================= */
+
+  const { data: statsData } = useQuery({
+    queryKey: ["stats"],
+    queryFn: dashboardStats,
+  });
+
+  /* =========================================
+     PROFILE IMAGE
+  ========================================= */
+
+  const [profileImage, setProfileImage] = useState(
+    user?.user?.avatar || ""
+  );
+
+  /* =========================================
+     EDITABLE USERNAME + BIO
+  ========================================= */
+
+  const [editableName, setEditableName] =
+  useState(user?.user?.name || "");
+
+const [bio, setBio] = useState(
+  user?.user?.bio || ""
+);
+
+const [isEditingName, setIsEditingName] =
+  useState(false);
+
+  /* =========================================
+     PASSWORD FORM
+  ========================================= */
+
   const [formData, setFormData] = useState({
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
 
+  /* =========================================
+     PASSWORD STRENGTH
+  ========================================= */
+
+  const passwordStrength = useMemo(() => {
+
+    const password = formData.newPassword;
+
+    if (!password) return "";
+
+    let score = 0;
+
+    if (password.length >= 8) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
+
+    if (score <= 1) return "Weak";
+    if (score <= 3) return "Medium";
+
+    return "Strong";
+
+  }, [formData.newPassword]);
+
+  /* =========================================
+     PROFILE COMPLETION
+  ========================================= */
+
+  const profileCompletion = useMemo(() => {
+
+    let score = 0;
+
+    if (user?.user?.avatar) score += 20;
+    if (user?.user?.email) score += 20;
+    
+    if (editableName.length > 2) score += 20;
+    if (formData.newPassword.length >= 8) score += 20;
+
+    return score;
+
+  }, [
+    user,
+    bio,
+    editableName,
+    formData.newPassword,
+  ]);
+
+  /* =========================================
+     EARNINGS ANALYTICS
+  ========================================= */
+
+  const totalEarnings =
+    statsData?.latestUserAuctions?.reduce(
+      (acc, auction) =>
+        acc + Number(auction.currentPrice || 0),
+      0
+    ) || 0;
+
+  const highestSale =
+    Math.max(
+      ...(statsData?.latestUserAuctions?.map(
+        (auction) =>
+          Number(auction.currentPrice || 0)
+      ) || [0])
+    );
+
+  /* =========================================
+     WINNER BADGE
+  ========================================= */
+
+  const winnerBadge =
+    statsData?.userAuctionWinCount >= 1;
+
+  /* =========================================
+     PASSWORD CHANGE
+  ========================================= */
+
   const { mutate, isPending } = useMutation({
+
     mutationFn: () => changePassword(formData),
+
     onSuccess: () => {
-      setSuccessMessage("Password Changed Successfully");
+
+      setSuccessMessage(
+        "Password Changed Successfully"
+      );
+
       setTimeout(() => {
         setSuccessMessage("");
-      }, 10000);
+      }, 5000);
 
       setFormData({
         currentPassword: "",
         newPassword: "",
         confirmPassword: "",
       });
+
     },
+
     onError: (error) => {
-      setIsError(error?.response?.data?.error);
+
+      setIsError(
+        error?.response?.data?.error ||
+        "Something went wrong"
+      );
+
       setTimeout(() => {
         setIsError("");
-      }, 10000);
+      }, 5000);
+
     },
+
   });
 
+  /* =========================================
+     UPLOAD AVATAR
+  ========================================= */
+
+  const uploadAvatarMutation = useMutation({
+
+    mutationFn: uploadAvatar,
+
+    onSuccess: (data) => {
+
+      setProfileImage(data.avatar);
+
+      const updatedUser = {
+
+        ...user,
+
+        user: {
+
+          ...user.user,
+
+          avatar: data.avatar,
+
+        },
+
+      };
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(updatedUser)
+      );
+
+      setSuccessMessage(
+        "Profile photo updated successfully"
+      );
+
+      setTimeout(() => {
+        setSuccessMessage("");
+      }, 4000);
+
+    },
+
+    onError: (error) => {
+
+      setIsError(
+        error?.response?.data?.message ||
+        "Failed to upload image"
+      );
+
+      setTimeout(() => {
+        setIsError("");
+      }, 4000);
+
+    },
+
+  });
+
+  /* =========================================
+     INPUT CHANGE
+  ========================================= */
+
   const handleChange = (e) => {
+
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
   };
 
+  /* =========================================
+     PROFILE PHOTO CHANGE
+  ========================================= */
+
+  const handleProfileImage = (e) => {
+
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+
+      setIsError(
+        "Only image files are allowed."
+      );
+
+      return;
+
+    }
+
+    const fileSizeMB =
+      file.size / (1024 * 1024);
+
+    if (fileSizeMB > 5) {
+
+      setIsError(
+        "Image size must be less than 5MB."
+      );
+
+      return;
+
+    }
+
+    const imagePreview =
+      URL.createObjectURL(file);
+
+    setProfileImage(imagePreview);
+
+    const form = new FormData();
+
+    form.append("avatar", file);
+
+    uploadAvatarMutation.mutate(form);
+
+  };
+
+  /* =========================================
+     SUBMIT
+  ========================================= */
+
   const handleSubmit = (e) => {
+
     e.preventDefault();
-    const { currentPassword, newPassword, confirmPassword } = formData;
-    if (!currentPassword || !newPassword || !confirmPassword) {
-      setIsError("Please enter all fields");
+
+    const {
+      currentPassword,
+      newPassword,
+      confirmPassword,
+    } = formData;
+
+    if (
+      !currentPassword ||
+      !newPassword ||
+      !confirmPassword
+    ) {
+
+      setIsError(
+        "Please enter all fields."
+      );
+
       setTimeout(() => {
         setIsError("");
-      }, 10000);
+      }, 5000);
+
       return;
+
     }
+
     if (newPassword !== confirmPassword) {
-      setIsError("New password and confirm password do not match.");
+
+      setIsError(
+        "Passwords do not match."
+      );
+
       setTimeout(() => {
         setIsError("");
-      }, 10000);
+      }, 5000);
+
       return;
+
     }
+
     mutate(formData);
+
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Main content */}
-      <div className="max-w-4xl mx-auto p-4 md:p-8">
-        {/* Page content */}
-        <main className="p-4 sm:p-6 lg:p-8">
-          <div className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-900">
-              Profile Settings
-            </h1>
-            <p className="text-gray-500">
-              Update your personal information and password
-            </p>
+
+    <div className="min-h-screen bg-gradient-to-br from-[#f8fafc] via-white to-indigo-50 font-sans py-10 px-4 relative overflow-hidden">
+
+      {/* GLOW */}
+      <div className="absolute top-0 left-0 w-96 h-96 bg-indigo-300/20 blur-3xl rounded-full"></div>
+
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-cyan-300/20 blur-3xl rounded-full"></div>
+
+      <div className="max-w-6xl mx-auto relative z-10">
+
+        {/* HEADER */}
+        <div className="text-center mb-10">
+
+          <div className="inline-block px-5 py-2 rounded-full bg-indigo-100 text-indigo-700 text-sm font-semibold mb-5">
+
+            PROFILE SETTINGS
+
           </div>
 
-          {successMessage && (
-            <div className="mb-6 bg-green-50 border-l-4 border-green-400 p-4 rounded-md">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <svg
-                    className="h-5 w-5 text-green-400"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </div>
-                <div className="ml-3">
-                  <p className="text-sm text-green-700">{successMessage}</p>
-                </div>
-              </div>
-            </div>
-          )}
+          <h1 className="text-5xl font-extrabold text-[#0b132b]">
 
-          <div className="bg-white shadow overflow-hidden border border-gray-200 rounded-md">
-            <div className="px-4 py-5 sm:px-6 border-b border-gray-200">
-              <div className="flex flex-col sm:flex-row items-center">
-                <div className="relative mb-4 sm:mb-0">
+            Manage Your Account
+
+          </h1>
+
+          <p className="text-slate-500 mt-3 text-lg">
+
+            Update your information and security settings
+
+          </p>
+
+        </div>
+
+        {/* SUCCESS */}
+        {successMessage && (
+
+          <div className="mb-6 bg-green-50 border border-green-200 text-green-700 px-5 py-4 rounded-2xl">
+
+            {successMessage}
+
+          </div>
+
+        )}
+
+        {/* ERROR */}
+        {isError && (
+
+          <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-5 py-4 rounded-2xl">
+
+            {isError}
+
+          </div>
+
+        )}
+
+        {/* PROFILE CARD */}
+        <div className="bg-white/80 backdrop-blur-xl border border-white/40 rounded-[2rem] shadow-[0_20px_60px_rgba(79,70,229,0.15)] overflow-hidden">
+
+          {/* TOP SECTION */}
+          <div className="px-8 py-10 border-b border-slate-200">
+
+            <div className="flex flex-col lg:flex-row items-center justify-between gap-10">
+
+              {/* LEFT */}
+              <div className="flex flex-col md:flex-row items-center gap-6">
+
+                {/* IMAGE */}
+                <div className="relative group">
+
                   <img
-                    src={user.user.avatar}
-                    alt="User avatar"
-                    className="h-20 w-20 rounded-full bg-gray-200 mx-auto sm:mx-0"
+                    src={
+                      profileImage ||
+                      "https://ui-avatars.com/api/?name=User"
+                    }
+                    alt="Profile"
+                    className="w-36 h-36 rounded-full object-cover border-4 border-white shadow-2xl transition-all duration-500 group-hover:scale-105"
                   />
-                  <button className="absolute bottom-0 right-0 sm:right-0 bg-white rounded-full p-1 border border-gray-300 shadow-sm">
-                    <CiCamera className="h-4 w-4 text-gray-500" />
-                  </button>
-                </div>
-                <div className="ml-0 sm:ml-4 text-center sm:text-left">
-                  <h2 className="text-lg font-medium text-gray-900">
-                    {user.user.name}
-                  </h2>
-                  <p className="text-sm text-gray-500">{user.user.email}</p>
-                </div>
-              </div>
-            </div>
 
-            <form onSubmit={handleSubmit} className="divide-y divide-gray-200">
-              {/* Personal Information */}
-              <div className="px-4 py-5 sm:p-6">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">
-                  Personal Information
-                </h3>
-                <div className="grid grid-cols-1 gap-6">
-                  <div>
-                    <label
-                      htmlFor="name"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      Full Name
-                    </label>
-                    <div className="relative rounded-md shadow-sm">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <CiUser className="h-5 w-5 text-gray-400" />
-                      </div>
-                      <input
-                        type="text"
-                        name="name"
-                        id="name"
-                        value={user.user.name}
-                        className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-400"
-                        placeholder="Your full name"
-                        required
-                        disabled
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="email"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      Email Address
-                    </label>
-                    <div className="relative rounded-md shadow-sm">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <CiMail className="h-5 w-5 text-gray-400" />
-                      </div>
-                      <input
-                        type="email"
-                        name="email"
-                        id="email"
-                        value={user.user.email}
-                        disabled
-                        className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-400"
-                        placeholder="you@example.com"
-                        required
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Password */}
-              <div className="px-4 py-5 sm:p-6">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">
-                  Change Password
-                </h3>
-                <div className="grid grid-cols-1 gap-6">
-                  <div>
-                    <label
-                      htmlFor="currentPassword"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      Current Password
-                    </label>
-                    <div className="relative rounded-md shadow-sm">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <CiLock className="h-5 w-5 text-gray-400" />
-                      </div>
-                      <input
-                        type="password"
-                        name="currentPassword"
-                        id="currentPassword"
-                        value={formData.currentPassword}
-                        onChange={handleChange}
-                        className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        placeholder="Enter your current password"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="newPassword"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      New Password
-                    </label>
-                    <div className="relative rounded-md shadow-sm">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <CiLock className="h-5 w-5 text-gray-400" />
-                      </div>
-                      <input
-                        type="password"
-                        name="newPassword"
-                        id="newPassword"
-                        value={formData.newPassword}
-                        onChange={handleChange}
-                        className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        placeholder="Enter new password"
-                        minLength={8}
-                      />
-                    </div>
-                    <p className="mt-1 text-xs text-gray-500">
-                      Password must be at least 8 characters long
-                    </p>
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="confirmPassword"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      Confirm New Password
-                    </label>
-                    <div className="relative rounded-md shadow-sm">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <CiLock className="h-5 w-5 text-gray-400" />
-                      </div>
-                      <input
-                        type="password"
-                        name="confirmPassword"
-                        id="confirmPassword"
-                        value={formData.confirmPassword}
-                        onChange={handleChange}
-                        className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        placeholder="Confirm new password"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Error Message */}
-                  {isError && (
-                    <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
-                      {isError}
-                    </div>
-                  )}
-
-                  {/* Success Message */}
-                  {successMessage && (
-                    <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-md">
-                      {successMessage}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Submit button */}
-              <div className="px-4 py-5 sm:p-6">
-                <div className="flex justify-end">
                   <button
                     type="button"
-                    disabled
-                    className="mr-3 px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    onClick={() =>
+                      fileInputRef.current.click()
+                    }
+                    className="absolute bottom-2 right-2 w-12 h-12 rounded-full bg-white shadow-lg border border-slate-200 flex items-center justify-center hover:bg-indigo-600 hover:text-white transition-all duration-300"
                   >
-                    Cancel
+
+                    <CiCamera className="text-2xl" />
+
                   </button>
-                  <button
-                    type="submit"
-                    disabled={isPending}
-                    className="px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isPending ? "Saving..." : "Save Changes"}
-                  </button>
+
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={fileInputRef}
+                    onChange={handleProfileImage}
+                    className="hidden"
+                  />
+
                 </div>
+
+                {/* USER INFO */}
+                <div className="text-center md:text-left">
+<div className="flex items-center gap-3 flex-wrap justify-center md:justify-start">
+
+  {isEditingName ? (
+
+    <input
+      type="text"
+      value={editableName}
+      onChange={(e) =>
+        setEditableName(e.target.value)
+      }
+      onBlur={() =>
+        setIsEditingName(false)
+      }
+      autoFocus
+      maxLength={25}
+      className="text-4xl font-bold text-[#0b132b] bg-white border-2 border-indigo-500 rounded-xl px-3 py-1 outline-none transition-all duration-300"
+    />
+
+  ) : (
+
+    <h2
+      onClick={() =>
+        setIsEditingName(true)
+      }
+      className="text-4xl font-bold text-[#0b132b] cursor-pointer hover:text-indigo-600 transition-all duration-300"
+    >
+
+      {editableName}
+
+    </h2>
+
+  )}
+
+  <IoCheckmarkCircle className="text-blue-500 text-2xl" />
+<br></br>
+  {winnerBadge && (
+
+    <span className="px-4 py-2 rounded-full bg-yellow-100 text-yellow-700 text-sm font-bold shadow-sm">
+
+      Auction Winner 🏆 
+
+    </span>
+
+  )}
+
+</div>
+
+                  <p className="text-slate-500 mt-2 text-lg">
+
+                    {user.user.email}
+
+                  </p>
+
+                 
+
+                </div> 
+
               </div>
-            </form>
+
+              {/* PROFILE COMPLETION */}
+              
+
+            </div>
+
           </div>
-        </main>
+
+          {/* STATS */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 p-8 border-b border-slate-200">
+
+            <div className="bg-indigo-50 rounded-3xl p-6 text-center">
+
+              <p className="text-slate-500 text-sm">
+
+                Auctions Created
+
+              </p>
+
+              <h3 className="text-4xl font-bold text-indigo-700 mt-2">
+
+                {statsData?.userAuctionCount || 0}
+
+              </h3>
+
+            </div>
+
+            <div className="bg-cyan-50 rounded-3xl p-6 text-center">
+
+              <p className="text-slate-500 text-sm">
+
+                Total Bids
+
+              </p>
+
+              <h3 className="text-4xl font-bold text-cyan-700 mt-2">
+
+                {statsData?.userBidsCount || 0}
+
+              </h3>
+
+            </div>
+
+            <div className="bg-emerald-50 rounded-3xl p-6 text-center">
+
+              <p className="text-slate-500 text-sm">
+
+                Auctions Won
+
+              </p>
+
+              <h3 className="text-4xl font-bold text-emerald-700 mt-2">
+
+                {statsData?.userAuctionWinCount || 0}
+
+              </h3>
+
+            </div>
+
+            <div className="bg-amber-50 rounded-3xl p-6 text-center">
+
+              <p className="text-slate-500 text-sm">
+
+                Active Auctions
+
+              </p>
+
+              <h3 className="text-4xl font-bold text-amber-700 mt-2">
+
+                {statsData?.activeAuctions || 0}
+
+              </h3>
+
+            </div>
+
+          </div>
+
+          {/* EARNINGS ANALYTICS */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-8 pb-8">
+
+            {/* TOTAL EARNINGS */}
+            <div className="bg-gradient-to-r from-emerald-500 to-green-500 rounded-3xl p-8 text-white shadow-2xl">
+
+              <p className="text-sm uppercase tracking-wider opacity-80">
+
+                Total Earnings
+
+              </p>
+
+              <h2 className="text-5xl font-extrabold mt-4">
+
+                ₹{totalEarnings.toLocaleString()}
+
+              </h2>
+
+              <p className="mt-4 text-white/80">
+
+                Revenue generated from your auctions
+
+              </p>
+
+            </div>
+
+            {/* HIGHEST SALE */}
+            <div className="bg-gradient-to-r from-indigo-600 to-cyan-500 rounded-3xl p-8 text-white shadow-2xl">
+
+              <p className="text-sm uppercase tracking-wider opacity-80">
+
+                Highest Sale
+
+              </p>
+
+              <h2 className="text-5xl font-extrabold mt-4">
+
+                ₹{highestSale.toLocaleString()}
+
+              </h2>
+
+              <p className="mt-4 text-white/80">
+
+                Highest auction value achieved
+
+              </p>
+
+            </div>
+
+          </div>
+
+          {/* FORM */}
+          <form
+            onSubmit={handleSubmit}
+            className="divide-y divide-slate-200"
+          >
+
+            {/* PASSWORD */}
+            <div className="px-8 py-8">
+
+              <h3 className="text-2xl font-bold text-[#0b132b] mb-8">
+
+                Change Password
+
+              </h3>
+
+              <div className="space-y-6">
+
+                <PasswordInput
+                  label="Current Password"
+                  name="currentPassword"
+                  value={formData.currentPassword}
+                  onChange={handleChange}
+                  show={showCurrentPassword}
+                  setShow={setShowCurrentPassword}
+                />
+
+                <PasswordInput
+                  label="New Password"
+                  name="newPassword"
+                  value={formData.newPassword}
+                  onChange={handleChange}
+                  show={showNewPassword}
+                  setShow={setShowNewPassword}
+                />
+
+                {formData.newPassword && (
+
+                  <div>
+
+                    <p className="text-sm text-slate-600 mb-2">
+
+                      Password Strength:
+
+                    </p>
+
+                    <span
+                      className={`px-4 py-2 rounded-full text-sm font-semibold ${
+                        passwordStrength === "Weak"
+                          ? "bg-red-100 text-red-700"
+                          : passwordStrength === "Medium"
+                          ? "bg-yellow-100 text-yellow-700"
+                          : "bg-green-100 text-green-700"
+                      }`}
+                    >
+
+                      {passwordStrength}
+
+                    </span>
+
+                  </div>
+
+                )}
+
+                <PasswordInput
+                  label="Confirm Password"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  show={showConfirmPassword}
+                  setShow={setShowConfirmPassword}
+                />
+
+              </div>
+
+            </div>
+
+            {/* BUTTON */}
+            <div className="px-8 py-6 flex justify-end">
+
+              <button
+                type="submit"
+                disabled={isPending}
+                className="px-8 py-3 rounded-2xl bg-gradient-to-r from-indigo-700 via-blue-600 to-cyan-500 text-white font-semibold shadow-xl hover:scale-[1.03] transition-all duration-300 disabled:opacity-50"
+              >
+
+                {isPending
+                  ? "Saving..."
+                  : "Save Changes"}
+
+              </button>
+
+            </div>
+
+          </form>
+
+        </div>
+
       </div>
+
     </div>
+
   );
 }
+
+/* =========================================
+   PASSWORD INPUT COMPONENT
+========================================= */
+
+const PasswordInput = ({
+  label,
+  name,
+  value,
+  onChange,
+  show,
+  setShow,
+}) => {
+
+  return (
+
+    <div>
+
+      <label className="block text-sm font-semibold text-slate-700 mb-2">
+
+        {label}
+
+      </label>
+
+      <div className="relative">
+
+        <CiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
+
+        <input
+          type={show ? "text" : "password"}
+          name={name}
+          value={value}
+          onChange={onChange}
+          className="w-full pl-12 pr-14 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-200 focus:border-indigo-500 transition-all duration-300"
+        />
+
+        <button
+          type="button"
+          onClick={() => setShow(!show)}
+          className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-indigo-600"
+        >
+
+          {show ? (
+            <IoEyeOffOutline size={22} />
+          ) : (
+            <IoEyeOutline size={22} />
+          )}
+
+        </button>
+
+      </div>
+
+    </div>
+
+  );
+};

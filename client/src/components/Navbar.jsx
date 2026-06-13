@@ -2,31 +2,37 @@ import { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/auth/authSlice";
+
 import {
   MdOutlineCreate,
   MdOutlineDashboard,
   MdMailOutline,
-  MdAttachMoney,
+  MdCurrencyRupee,
   MdMenuOpen,
   MdOutlineAccountCircle,
   MdOutlineHome,
   MdOutlinePrivacyTip,
   MdAdminPanelSettings,
 } from "react-icons/md";
+
 import {
   IoCloseSharp,
-  IoDocumentTextOutline,
   IoLogOutOutline,
 } from "react-icons/io5";
+
 import { RiAuctionLine } from "react-icons/ri";
+
+import logo from "../assets/logoac.png";
 
 export const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   const { user } = useSelector((state) => state.auth);
 
-  // User logout
+  // LOGOUT
   const handleLogout = () => {
     dispatch(logout());
     navigate("/");
@@ -36,13 +42,14 @@ export const Navbar = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  //this will prevent body scroll when drawer is open
+  // PREVENT BODY SCROLL
   useEffect(() => {
     if (isMenuOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
     }
+
     return () => {
       document.body.style.overflow = "";
     };
@@ -50,197 +57,332 @@ export const Navbar = () => {
 
   return (
     <>
-      <header className="bg-white shadow-sm sticky top-0 z-40">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex justify-between items-center">
-            {/* Logo */}
-            <Link to="/" className="flex items-center space-x-2">
-              {/* Logo Image */}
-            
-              {/* Optional Icon (Keep if you want both) */}
-              <RiAuctionLine className="h-6 w-6 text-gray-700" />
+      {/* NAVBAR */}
+      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-slate-200 shadow-sm font-sans">
 
-              {/* Brand Name */}
-              <span className="text-xl font-bold text-gray-900">
-                Auction Centrall
-              </span>
+        <div className="max-w-7xl mx-auto px-6 py-4">
+
+          <div className="flex justify-between items-center">
+
+            {/* LOGO */}
+            <Link
+              to="/"
+              className="flex items-center gap-4 group"
+            >
+
+              {/* LOGO IMAGE */}
+              <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-indigo-100 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+
+                <img
+                  src={logo}
+                  alt="Auction Centrall"
+                  className="w-full h-full object-cover"
+                />
+
+              </div>
+
+              {/* BRAND */}
+              <div>
+
+                <h1 className="text-2xl font-black tracking-tight text-slate-900">
+
+                  Auction Centrall
+
+                </h1>
+
+                <p className="text-[11px] uppercase tracking-[0.25em] text-slate-500 font-semibold">
+
+                  Modern Marketplace
+
+                </p>
+
+              </div>
+
             </Link>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-6">
+            {/* DESKTOP NAV */}
+            <nav className="hidden md:flex items-center gap-8">
+
               {(user ? getNavLinks(user.user.role) : navMenu).map((item) => (
+
                 <NavLink
-                  to={item.link}
                   key={item.link}
+                  to={item.link}
                   className={({ isActive }) =>
                     isActive
-                      ? "text-indigo-600 hover:text-indigo-800 font-medium"
-                      : "text-gray-600 hover:text-gray-800 font-medium"
+                      ? "text-indigo-700 font-bold text-lg transition-all duration-300"
+                      : "text-slate-600 hover:text-indigo-700 font-semibold text-lg transition-all duration-300 hover:-translate-y-0.5"
                   }
                 >
                   {item.name}
                 </NavLink>
+
               ))}
+
             </nav>
 
-            {/* Mobile Menu Button */}
-            <button
-              onClick={toggleMenu}
-              className="text-gray-600 hover:text-gray-900 focus:outline-none"
-              aria-expanded={isMenuOpen}
-              aria-label="Toggle menu"
-            >
-              <MdMenuOpen className="h-6 w-6" />
-            </button>
+            {/* RIGHT SIDE */}
+            <div className="flex items-center gap-4">
+
+              {!user && <LoginSignup />}
+
+              {/* MENU BUTTON */}
+              <button
+                onClick={toggleMenu}
+                className="w-12 h-12 rounded-2xl bg-slate-100 hover:bg-indigo-100 hover:text-indigo-700 flex items-center justify-center transition-all duration-300 shadow-sm hover:shadow-lg"
+                aria-expanded={isMenuOpen}
+                aria-label="Toggle menu"
+              >
+
+                <MdMenuOpen className="text-2xl" />
+
+              </button>
+
+            </div>
+
           </div>
+
         </div>
+
       </header>
 
-      {/* Mobile Menu Drawer */}
+      {/* OVERLAY */}
       <div
-        className={`fixed inset-0 bg-black bg-opacity-50 z-50 transition-opacity duration-300 ${
-          isMenuOpen ? "opacity-70" : "opacity-0 pointer-events-none"
+        className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-all duration-300 ${
+          isMenuOpen
+            ? "opacity-100 visible"
+            : "opacity-0 invisible"
         }`}
         onClick={() => setIsMenuOpen(false)}
       />
 
-      <div
-        className={`fixed top-0 right-0 h-full w-72 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${
-          isMenuOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
-        <div className="flex justify-between items-center p-4 border-b border-gray-200">
-          <div className="flex items-center space-x-2">
-            <RiAuctionLine className="h-6 w-6 text-gray-700 " />
-            <span className="text-xl font-bold text-gray-900 ">
-              Auction Centrall
-            </span>
+      {/* SIDE DRAWER */}
+    <div
+  className={`fixed top-0 right-0 h-full w-80 bg-white border-l border-slate-200 shadow-[0_20px_80px_rgba(15,23,42,0.15)] z-50 transform transition-all duration-500 ease-in-out overflow-y-auto scrollbar-thin scrollbar-thumb-indigo-300 scrollbar-track-transparent ${
+    isMenuOpen
+      ? "translate-x-0"
+      : "translate-x-full"
+  }`}
+>
+      
+
+        {/* DRAWER HEADER */}
+        <div className="flex justify-between items-center p-5 border-b border-slate-200">
+
+          <div className="flex items-center gap-3">
+
+            <div className="w-12 h-12 rounded-full overflow-hidden shadow-md border border-slate-200">
+
+              <img
+                src={logo}
+                alt="Auction Centrall"
+                className="w-full h-full object-cover"
+              />
+
+            </div>
+
+            <div>
+
+              <h2 className="text-2xl font-black text-slate-900">
+
+                Auction Centrall
+
+              </h2>
+
+              <p className="text-[10px] uppercase tracking-[0.25em] text-slate-500 font-semibold">
+
+                Dashboard
+
+              </p>
+
+            </div>
+
           </div>
+
+          {/* CLOSE BUTTON */}
           <button
             onClick={() => setIsMenuOpen(false)}
-            className="text-gray-600 hover:text-gray-900 focus:outline-none pr-2"
-            aria-label="Close menu"
+            className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-red-100 hover:text-red-500 flex items-center justify-center transition-all duration-300"
           >
-            <IoCloseSharp className="h-6 w-6" />
+
+            <IoCloseSharp className="text-2xl" />
+
           </button>
+
         </div>
 
+        {/* USER INFO */}
         {user && (
-          <div className="p-4 border-b border-gray-200">
-            <div className="flex items-center space-x-3">
-              <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
-                {user.user.avatar ? (
-                  <img
-                    src={user.user.avatar}
-                    alt={user.user.name}
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <MdOutlineAccountCircle className="h-10 w-10 text-gray-500" />
-                )}
-              </div>
+          <div className="p-5 border-b border-slate-200">
+
+            <div className="flex items-center gap-4">
+
+              <div className="w-14 h-14 rounded-full bg-slate-100 overflow-hidden shadow-md flex items-center justify-center">
+
+  <img
+    src={
+      user?.user?.avatar ||
+      "https://ui-avatars.com/api/?name=User"
+    }
+    alt={user.user.name}
+    className="w-full h-full object-cover"
+  />
+
+</div>
+
               <div>
-                <p className="font-medium text-gray-900 ">{user.user.name}</p>
-                <p className="text-sm text-gray-500 truncate">
+
+                <h3 className="font-bold text-xl text-slate-900">
+                  {user.user.name}
+                </h3>
+
+                <p className="text-sm text-slate-500 truncate max-w-[180px]">
                   {user.user.email}
                 </p>
+
               </div>
+
             </div>
+
           </div>
         )}
 
-        <nav className="p-4">
-          <ul className="space-y-1">
+        {/* NAVIGATION */}
+        <nav className="p-5">
+
+          {/* MAIN LINKS */}
+          <ul className="space-y-2">
+
             {(user ? getNavLinks(user.user.role) : navMenu).map((item) => (
+
               <li key={item.link}>
+
                 <NavLink
                   to={item.link}
                   className={({ isActive }) =>
                     isActive
-                      ? "flex items-center py-2 text-indigo-600  hover:text-indigo-800 font-medium"
-                      : "flex items-center py-2 text-gray-600  hover:text-gray-800 font-medium"
+                      ? "flex items-center gap-4 px-5 py-4 rounded-2xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white shadow-lg font-semibold text-lg"
+                      : "flex items-center gap-4 px-5 py-4 rounded-2xl text-slate-700 hover:bg-slate-100 hover:text-indigo-700 transition-all duration-300 font-semibold text-lg"
                   }
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {item.icon}
+
+                  <span className="text-2xl">
+                    {item.icon}
+                  </span>
+
                   {item.name}
+
                 </NavLink>
+
               </li>
+
             ))}
+
           </ul>
 
+          {/* EXTRA USER LINKS */}
           {user ? (
-            <div className="mt-6 pt-6 border-t border-gray-200 ">
-              <ul className="space-y-4">
+            <div className="mt-8 pt-8 border-t border-slate-200">
+
+              <ul className="space-y-2">
+
                 {protectedNavLink.slice(4, 7).map((item) => (
+
                   <li key={item.link}>
+
                     <NavLink
                       to={item.link}
                       className={({ isActive }) =>
                         isActive
-                          ? "flex items-center py-2 text-indigo-600  hover:text-indigo-800 font-medium"
-                          : "flex items-center py-2 text-gray-600  hover:text-gray-800 font-medium"
+                          ? "flex items-center gap-4 px-5 py-4 rounded-2xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white shadow-lg font-semibold text-lg"
+                          : "flex items-center gap-4 px-5 py-4 rounded-2xl text-slate-700 hover:bg-slate-100 hover:text-indigo-700 transition-all duration-300 font-semibold text-lg"
                       }
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      {item.icon}
+
+                      <span className="text-2xl">
+                        {item.icon}
+                      </span>
+
                       {item.name}
+
                     </NavLink>
+
                   </li>
+
                 ))}
+
+                {/* LOGOUT */}
                 <li>
+
                   <button
-                    className="flex items-center w-full py-2 text-gray-600  hover:text-gray-800 font-medium text-left cursor-pointer"
+                    className="flex items-center gap-4 w-full px-5 py-4 rounded-2xl text-slate-700 hover:bg-red-50 hover:text-red-500 transition-all duration-300 font-semibold text-lg"
                     onClick={() => {
                       setIsMenuOpen(false);
                       handleLogout();
                     }}
                   >
-                    <IoLogOutOutline className="mr-3 h-5 w-5" />
+
+                    <IoLogOutOutline className="text-2xl" />
+
                     Sign out
+
                   </button>
+
                 </li>
+
               </ul>
+
             </div>
           ) : (
-            <div className="mt-6 pt-6 border-t border-gray-200 space-y-4">
+            <div className="mt-8 pt-8 border-t border-slate-200 space-y-4">
+
               <Link
                 to="/login"
-                className="block w-full py-2 px-4 text-center text-gray-700  border border-gray-300 rounded-md hover:bg-gray-100 transition-colors"
+                className="block w-full py-4 text-center rounded-2xl border border-slate-200 text-slate-700 hover:bg-slate-100 transition-all duration-300 font-semibold"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Log in
               </Link>
+
               <Link
                 to="/signup"
-                className="block w-full py-2 px-4 text-center bg-indigo-800 text-white rounded-md hover:bg-indigo-700 transition-colors"
+                className="block w-full py-4 text-center rounded-2xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white shadow-lg hover:scale-[1.02] transition-all duration-300 font-semibold"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Sign up
               </Link>
+
             </div>
           )}
+
         </nav>
+
       </div>
     </>
   );
 };
+
 export const LoginSignup = () => {
   return (
-    <>
+    <div className="hidden md:flex items-center gap-4">
+
       <Link
         to="/login"
-        className="px-4 py-2 text-gray-700  border border-gray-300 rounded-md hover:bg-gray-100 transition-colors hidden md:block"
+        className="px-6 py-3 rounded-2xl border border-slate-200 text-slate-700 hover:bg-slate-100 transition-all duration-300 font-semibold"
       >
         Log in
       </Link>
+
       <Link
         to="/signup"
-        className="px-4 py-2 bg-indigo-800 text-white  rounded-md hover:bg-indigo-700 transition-colors hidden md:block"
+        className="px-6 py-3 rounded-2xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white shadow-lg hover:scale-105 transition-all duration-300 font-semibold"
       >
         Sign up
       </Link>
-    </>
+
+    </div>
   );
 };
 
@@ -248,7 +390,7 @@ const navMenu = [
   {
     name: "Home",
     link: "/",
-    icon: <MdOutlineHome className="mr-3 h-5 w-5" />,
+    icon: <MdOutlineHome className="h-5 w-5" />,
   },
 ];
 
@@ -256,37 +398,37 @@ const protectedNavLink = [
   {
     name: "Dashboard",
     link: "/",
-    icon: <MdOutlineDashboard className="mr-3 h-5 w-5" />,
+    icon: <MdOutlineDashboard className="h-5 w-5" />,
   },
   {
     name: "Create Auction",
     link: "/create",
-    icon: <MdOutlineCreate className="mr-3 h-5 w-5" />,
+    icon: <MdOutlineCreate className="h-5 w-5" />,
   },
   {
     name: "View Auction",
     link: "/auction",
-    icon: <RiAuctionLine className="mr-3 h-5 w-5" />,
+    icon: <RiAuctionLine className="h-5 w-5" />,
   },
   {
     name: "My Auction",
     link: "/myauction",
-    icon: <MdAttachMoney className="mr-3 h-5 w-5" />,
-  },
-  {
-    name: "Contact",
-    link: "/contact",
-    icon: <MdMailOutline className="mr-3 h-5 w-5" />,
+    icon: <MdCurrencyRupee className="h-5 w-5" />,
   },
   {
     name: "Profile",
     link: "/profile",
-    icon: <MdOutlineAccountCircle className="mr-3 h-5 w-5" />,
+    icon: <MdOutlineAccountCircle className="h-5 w-5" />,
+  },
+  {
+    name: "Contact",
+    link: "/contact",
+    icon: <MdMailOutline className="h-5 w-5" />,
   },
   {
     name: "Privacy",
     link: "/privacy",
-    icon: <MdOutlinePrivacyTip className="mr-3 h-5 w-5" />,
+    icon: <MdOutlinePrivacyTip className="h-5 w-5" />,
   },
 ];
 
@@ -294,29 +436,30 @@ const adminNavLink = [
   {
     name: "Admin Panel",
     link: "/admin",
-    icon: <MdAdminPanelSettings className="mr-3 h-5 w-5" />,
+    icon: <MdAdminPanelSettings className="h-5 w-5" />,
   },
   {
     name: "Dashboard",
     link: "/",
-    icon: <MdOutlineDashboard className="mr-3 h-5 w-5" />,
+    icon: <MdOutlineDashboard className="h-5 w-5" />,
   },
   {
     name: "Create Auction",
     link: "/create",
-    icon: <MdOutlineCreate className="mr-3 h-5 w-5" />,
+    icon: <MdOutlineCreate className="h-5 w-5" />,
   },
   {
     name: "View Auction",
     link: "/auction",
-    icon: <RiAuctionLine className="mr-3 h-5 w-5" />,
+    icon: <RiAuctionLine className="h-5 w-5" />,
   },
 ];
 
-// Helper function to get navigation links based on user role
+// GET NAV LINKS
 const getNavLinks = (userRole) => {
   if (userRole === "admin") {
     return adminNavLink;
   }
+
   return protectedNavLink.slice(0, 4);
 };

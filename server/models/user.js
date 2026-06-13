@@ -15,13 +15,19 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     avatar: {
-        type: String,
-    },
+  type: String,
+  default: "",
+},
      role: {
         type: String,
         enum: ['user', 'admin'],
         default: 'user',
     },
+    role: {
+  type: String,
+  enum: ["user", "admin"],
+  default: "user",
+},
     ipAddress: {
         type: String
     },

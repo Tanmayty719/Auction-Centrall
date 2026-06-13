@@ -30,11 +30,11 @@ export const handleUserLogin = async (req, res) => {
 
         // Set HTTP-only cookie
         res.cookie("auth_token", token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-        })
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+});
 
         // Getting user gro location
         const ip = getClientIp(req);
@@ -119,24 +119,27 @@ export const handleUserSignup = async (req, res) => {
 
         // Set HTTP-only cookie
         res.cookie("auth_token", token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-        })
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+});
 
         return res.status(201).json({ message: "User registered successfully" });
     } catch (err) {
-        console.log(err);
-        return res.status(500).json({ error: "Server error" });
-    }
+    console.error("SIGNUP ERROR:", err);
+    return res.status(500).json({
+        error: err.message,
+        stack: err.stack,
+    });
+}
 }
 
 export const handleUserLogout = async (req, res) => {
     res.clearCookie("auth_token", {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-    });
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+});
     return res.status(200).json({ message: "Logged out successfully" });
 }

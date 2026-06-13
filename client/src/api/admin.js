@@ -43,17 +43,44 @@ export const updateUserRole = async (userId, newRole) => {
 };
 
 // Delete user (future functionality)
-export const deleteUser = async (userId) => {
-    try {
-        const res = await axios.delete(`${VITE_API}/admin/users/${userId}`,
-            { withCredentials: true }
-        );
-        return res.data;
-    } catch (error) {
-        console.log(error?.response?.data?.error || "Can't delete user");
-        throw error;
-    }
+// Delete User
+export const deleteUser = async (id) => {
+
+  try {
+
+    console.log(
+      "Deleting User ID:",
+      id
+    );
+
+    const res = await axios.delete(
+      `${VITE_API}/admin/users/${id}`,
+      {
+        withCredentials: true,
+      }
+    );
+
+    console.log(
+      "Delete Success:",
+      res.data
+    );
+
+    return res.data;
+
+  } catch (error) {
+
+    console.error(
+      "Delete User Error:",
+      error?.response?.data ||
+      error.message
+    );
+
+    throw error;
+
+  }
+
 };
+
 
 // Block/Unblock user (future functionality)
 export const toggleUserStatus = async (userId, status) => {
