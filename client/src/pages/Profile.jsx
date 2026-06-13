@@ -132,12 +132,10 @@ const [isEditingName, setIsEditingName] =
      EARNINGS ANALYTICS
   ========================================= */
 
-  const totalEarnings =
-    statsData?.latestUserAuctions?.reduce(
-      (acc, auction) =>
-        acc + Number(auction.currentPrice || 0),
-      0
-    ) || 0;
+
+
+const totalEarnings =
+  statsData?.totalUserEarnings || 0;
 
   const highestSale =
     Math.max(

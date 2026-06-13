@@ -664,25 +664,45 @@ export const dashboardData = async (req, res) => {
 
             });
 
+const totalEarnings = await Product.aggregate([
+  {
+    $match: {
+      seller: userObjectId,
+      itemEndDate: { $lt: dateNow },
+    },
+  },
+  {
+    $group: {
+      _id: null,
+      total: {
+        $sum: "$currentPrice",
+      },
+    },
+  },
+]);
 
+const totalUserEarnings =
+  totalEarnings[0]?.total || 0;
 
-        return res.status(200).json({
+       return res.status(200).json({
 
-            totalAuctions,
+    totalAuctions,
 
-            userAuctionCount,
+    userAuctionCount,
 
-            activeAuctions,
+    activeAuctions,
 
-            userBidsCount,
+    userBidsCount,
 
-            userAuctionWinCount,
+    userAuctionWinCount,
 
-            latestAuctions,
+    totalUserEarnings,
 
-            latestUserAuctions,
+    latestAuctions,
 
-        });
+    latestUserAuctions,
+
+});
 
     } catch (error) {
 
