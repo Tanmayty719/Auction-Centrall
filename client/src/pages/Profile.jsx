@@ -138,12 +138,7 @@ const totalEarnings =
   statsData?.totalUserEarnings || 0;
 
   const highestSale =
-    Math.max(
-      ...(statsData?.latestUserAuctions?.map(
-        (auction) =>
-          Number(auction.currentPrice || 0)
-      ) || [0])
-    );
+  statsData?.highestUserSale || 0;
 
   /* =========================================
      WINNER BADGE
