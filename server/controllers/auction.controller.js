@@ -698,6 +698,8 @@ const totalUserEarnings =
 
     totalUserEarnings,
 
+    highestUserSale,
+
     latestAuctions,
 
     latestUserAuctions,
