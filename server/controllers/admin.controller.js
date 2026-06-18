@@ -37,20 +37,27 @@ export const getAdminDashboard = async (req, res) => {
         },
       });
 
-    const recentActiveAuctions =
-      await Product.find({
-        itemEndDate: {
-          $gt: new Date(),
-        },
-      })
-        .populate(
-          "seller",
-          "name email"
-        )
-        .sort({
-          createdAt: -1,
-        })
-        .limit(10);
+    const recentActiveAuctions = await Product.find({
+  itemEndDate: { $gt: new Date() },
+})
+.populate({
+  path: "seller",
+  select: "name email",
+  strictPopulate: false,
+})
+.sort({ createdAt: -1 })
+.limit(10)
+.lean();
+
+const formattedAuctions = recentActiveAuctions.map((auction) => ({
+  ...auction,
+  sellerName: auction.seller?.name || "Unknown Seller",
+  bidsCount: auction.bids?.length || 0,
+  highestBidder:
+    auction.bids?.length > 0
+      ? auction.bids[auction.bids.length - 1].bidder?.name || "N/A"
+      : "No Bids",
+}));;
 
     const recentUsersList =
       await User.find({})
@@ -69,8 +76,7 @@ export const getAdminDashboard = async (req, res) => {
         totalUsers,
         recentUsers,
       },
-      recentAuctions:
-        recentActiveAuctions,
+      recentAuctions: formattedAuctions,
       recentUsersList,
     });
   } catch (error) {
