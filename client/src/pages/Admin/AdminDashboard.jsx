@@ -15,7 +15,9 @@ export const AdminDashboard = () => {
     try {
       const data = await getAdminDashboard();
 
-console.log("Dashboard API Response:", data);
+console.log("Dashboard Response:", data);
+
+
 
 setDashboardData(data);
       setUsers(data?.recentUsersList || []);// Assuming the API returns a list of recent users as part of the dashboard data
