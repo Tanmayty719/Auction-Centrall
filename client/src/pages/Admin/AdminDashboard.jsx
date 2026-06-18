@@ -14,7 +14,10 @@ export const AdminDashboard = () => {
   const fetchDashboardData = async () => {
     try {
       const data = await getAdminDashboard();
-      setDashboardData(data || {});
+
+console.log("Dashboard API Response:", data);
+
+setDashboardData(data);
       setUsers(data?.recentUsersList || []);// Assuming the API returns a list of recent users as part of the dashboard data
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
@@ -73,7 +76,7 @@ export const AdminDashboard = () => {
                     Active Auctions
                   </h3>
                   <p className="text-2xl font-bold text-gray-900 mt-2">
-                    {dashboardData.stats.activeAuctions || 0}
+                    {dashboardData?.stats?.activeAuctions ?? 0}
                   </p>
                 </div>
                 <div className="bg-green-100 p-3 rounded-full">
@@ -91,7 +94,7 @@ export const AdminDashboard = () => {
                     Total Auctions
                   </h3>
                   <p className="text-2xl font-bold text-gray-900 mt-2">
-                    {dashboardData.stats.totalAuctions || 0}
+                    {dashboardData?.stats?.totalAuctions ?? 0}
                   </p>
                 </div>
                 <div className="bg-blue-100 p-3 rounded-full">
@@ -109,7 +112,7 @@ export const AdminDashboard = () => {
                     Total Users
                   </h3>
                   <p className="text-2xl font-bold text-gray-900 mt-2">
-                    {dashboardData.stats.totalUsers || 0}
+                    {dashboardData?.stats?.totalUsers ?? 0}
                   </p>
                 </div>
                 <div className="bg-purple-100 p-3 rounded-full">
@@ -127,7 +130,7 @@ export const AdminDashboard = () => {
                     Recent Signups
                   </h3>
                   <p className="text-2xl font-bold text-gray-900 mt-2">
-                    {dashboardData.stats.recentUsers || 0}
+                    {dashboardData?.stats?.recentUsers ?? 0}
                   </p>
                 </div>
                 <div className="bg-orange-100 p-3 rounded-full">
