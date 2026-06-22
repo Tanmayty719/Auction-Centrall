@@ -397,7 +397,7 @@ const navMenu = [
 const protectedNavLink = [
   {
     name: "Dashboard",
-    link: "/",
+    link: "/dashboard",
     icon: <MdOutlineDashboard className="h-5 w-5" />,
   },
   {
@@ -440,7 +440,7 @@ const adminNavLink = [
   },
   {
     name: "Dashboard",
-    link: "/",
+    link: "/dashboard",
     icon: <MdOutlineDashboard className="h-5 w-5" />,
   },
   {

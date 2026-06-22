@@ -12,14 +12,27 @@ import {
 } from "react-icons/fa";
 
 const Dashboard = () => {
-  const { data, isLoading } = useQuery({
-    queryKey: ["stats"],
-    queryFn: () => dashboardStats(),
-    staleTime: 30 * 1000,
-  });
+ const {
+  data,
+  isLoading,
+  isError,
+  error,
+} = useQuery({
+  queryKey: ["stats"],
+  queryFn: dashboardStats,
+  staleTime: 30 * 1000,
+});
 
   if (isLoading) return <LoadingScreen />;
 
+  if (isError) {
+  return (
+    <div className="p-10 text-center text-red-600">
+      <h2 className="text-2xl font-bold">Failed to load dashboard</h2>
+      <p>{error?.message}</p>
+    </div>
+  );
+}
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f8fafc] via-white to-indigo-50 font-sans relative overflow-hidden">
 
