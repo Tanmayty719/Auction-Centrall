@@ -32,6 +32,16 @@ const Dashboard = () => {
       <p>{error?.message}</p>
     </div>
   );
+
+const stats = {
+  totalAuctions: data?.totalAuctions ?? 0,
+  activeAuctions: data?.activeAuctions ?? 0,
+  userAuctionCount: data?.userAuctionCount ?? 0,
+  userBidsCount: data?.userBidsCount ?? 0,
+  latestAuctions: data?.latestAuctions ?? [],
+  latestUserAuctions: data?.latestUserAuctions ?? [],
+};
+
 }
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f8fafc] via-white to-indigo-50 font-sans relative overflow-hidden">
@@ -86,8 +96,7 @@ const Dashboard = () => {
             </h3>
 
             <p className="text-4xl font-extrabold text-slate-900 mt-3">
-
-              {data.totalAuctions}
+{stats.totalAuctions}
 
             </p>
 
@@ -209,7 +218,7 @@ const Dashboard = () => {
 
           </div>
 
-          {data.latestAuctions.length === 0 ? (
+          {stats.latestAuctions.length === 0 ? (
             <div className="text-center py-16 bg-white/70 backdrop-blur-xl border border-white/40 rounded-[2rem] shadow-lg">
 
               <p className="text-slate-500 text-lg">
@@ -260,7 +269,7 @@ const Dashboard = () => {
 
           </div>
 
-          {data.latestUserAuctions.length === 0 ? (
+          {stats.latestUserAuctions.length === 0 ? (
             <div className="text-center py-16 bg-white/70 backdrop-blur-xl border border-white/40 rounded-[2rem] shadow-lg">
 
               <p className="text-slate-500 text-lg mb-6">
@@ -280,7 +289,7 @@ const Dashboard = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-center gap-8">
-              {data.latestUserAuctions.map((auction) => (
+              {stats.latestUserAuctions.map((auction) => (
                 <AuctionCard key={auction._id} auction={auction} />
               ))}
             </div>

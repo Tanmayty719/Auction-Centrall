@@ -684,6 +684,25 @@ const totalEarnings = await Product.aggregate([
 const totalUserEarnings =
   totalEarnings[0]?.total || 0;
 
+const highestSale = await Product.aggregate([
+  {
+    $match: {
+      seller: userObjectId,
+    },
+  },
+  {
+    $group: {
+      _id: null,
+      highestUserSale: {
+        $max: "$currentPrice",
+      },
+    },
+  },
+]);
+
+const highestUserSale =
+  highestSale[0]?.highestUserSale || 0;
+
        return res.status(200).json({
 
     totalAuctions,
