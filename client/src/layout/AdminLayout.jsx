@@ -1,5 +1,6 @@
 import { Outlet } from "react-router";
 import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import {
   LayoutDashboard,
@@ -10,7 +11,7 @@ import {
 } from "lucide-react";
 
 export const AdminLayout = () => {
-
+const { user } = useSelector((state) => state.auth);
   return (
 
     <div className="min-h-screen flex bg-[#0f172a] text-white">
@@ -110,15 +111,36 @@ export const AdminLayout = () => {
 
             </h2>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
 
-              <div className="w-11 h-11 rounded-full bg-gradient-to-r from-indigo-500 to-cyan-500 flex items-center justify-center font-bold shadow-lg">
+  <div className="text-right">
 
-                TK
+    <h3 className="text-sm font-semibold text-white">
+      {user?.user?.name}
+    </h3>
 
-              </div>
+    <p className="text-xs text-slate-400 capitalize">
+      {user?.user?.role}
+    </p>
 
-            </div>
+  </div>
+
+  <div className="w-11 h-11 rounded-full overflow-hidden border-2 border-cyan-400 shadow-lg">
+
+    <img
+      src={
+        user?.user?.avatar ||
+        `https://ui-avatars.com/api/?name=${encodeURIComponent(
+          user?.user?.name || "Admin"
+        )}`
+      }
+      alt={user?.user?.name}
+      className="w-full h-full object-cover"
+    />
+
+  </div>
+
+</div>
 
           </div>
 

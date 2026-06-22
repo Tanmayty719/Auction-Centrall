@@ -64,7 +64,7 @@ setDashboardData(data);
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
+          <h1Admin className="text-3xl font-bold text-gray-900 mb-2"> Dashboard</h1Admin>
           <p className="text-gray-600">Manage auctions, users, and monitor system activity</p>
         </div>
 
